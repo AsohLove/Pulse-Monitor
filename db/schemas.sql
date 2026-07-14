@@ -1,0 +1,73 @@
+CREATE TABLE users (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE monitors (
+
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    name VARCHAR(120) NOT NULL,
+
+    url TEXT NOT NULL,
+
+    interval_seconds INTEGER NOT NULL
+        DEFAULT 60
+        CHECK (
+            interval_seconds BETWEEN 10 AND 3600
+        ),
+
+    expected_status INTEGER NOT NULL
+        DEFAULT 200,
+
+    is_active BOOLEAN NOT NULL
+        DEFAULT true,
+
+    created_at TIMESTAMPTZ NOT NULL
+        DEFAULT now(),
+    owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE checks (
+
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    monitor_id INTEGER NOT NULL
+        REFERENCES monitors(id)
+        ON DELETE CASCADE,
+
+    checked_at TIMESTAMPTZ NOT NULL
+        DEFAULT now(),
+
+    ok BOOLEAN NOT NULL,
+
+    status_code INTEGER,
+
+    latency_ms INTEGER,
+
+    error TEXT
+);
+
+CREATE TABLE incidents (
+
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    monitor_id INTEGER NOT NULL
+        REFERENCES monitors(id)
+        ON DELETE CASCADE,
+
+    started_at TIMESTAMPTZ NOT NULL
+        DEFAULT now(),
+
+    resolved_at TIMESTAMPTZ,
+
+    cause TEXT
+);
+
+CREATE INDEX idx_checks_monitor_checked_at
+ON checks (monitor_id, checked_at DESC);
+
+CREATE INDEX idx_monitors_owner
+ON monitors(owner_id);
