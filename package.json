@@ -1,0 +1,17 @@
+{
+  "name": "Pulse-Monitor-api",
+  "version": "1.0.0",
+  "description": "Pulse is a REST API for monitoring website uptime, recording incidents, and serving a public status page",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --env-file=.env --watch src/server.js",
+    "start": "node --env-file=.env  src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
