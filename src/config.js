@@ -26,6 +26,9 @@ const schema = z.object({
       "info"
     ])
     .default("info"),
+  POLL_TIMEOUT_MS: z
+    .number().int().positive().default(5000),
+
 });
 
 const result = schema.safeParse(process.env);
@@ -46,4 +49,5 @@ export const config = Object.freeze({
   databaseUrl: result.data.DATABASE_URL,
   jwtSecret: result.data.JWT_SECRET,
   logLevel: result.data.LOG_LEVEL,
+  pollTimeOutMs: result.POLL_TIMEOUT_MS
 });
