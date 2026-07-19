@@ -1,7 +1,7 @@
 import { createApp } from "./app.js";
 import { createServer } from 'node:http'
 import{ config } from './config.js'
-import { startScheduler } from "./scheduler/scheduler.js";
+import { startScheduler, stopScheduler } from "./scheduler/scheduler.js";
 
 const app = createApp()
 
@@ -13,3 +13,20 @@ server.listen(config.port, () => {
     
     startScheduler();
 })
+
+
+process.on("SIGINT", () => {
+
+    stopScheduler();
+
+    server.close(() => process.exit(0));
+
+});
+
+process.on("SIGTERM", () => {
+
+    stopScheduler();
+
+    server.close(() => process.exit(0));
+    
+});

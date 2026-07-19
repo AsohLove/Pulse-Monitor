@@ -49,5 +49,5 @@ export const config = Object.freeze({
   databaseUrl: result.data.DATABASE_URL,
   jwtSecret: result.data.JWT_SECRET,
   logLevel: result.data.LOG_LEVEL,
-  pollTimeOutMs: result.POLL_TIMEOUT_MS
+  pollTimeoutMs: result.data.POLL_TIMEOUT_MS
 });

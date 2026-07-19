@@ -6,7 +6,7 @@ export async function pollMonitor(monitor){
 
     try {
         const response = await fetch(monitor.url, {
-            signal: AbortSignal.timeout(config.pollTimeOutMs)
+            signal: AbortSignal.timeout(config.pollTimeoutMs)
         })
 
         const latency = Math.round(performance.now() - start);
@@ -26,7 +26,7 @@ export async function pollMonitor(monitor){
             ok: false,
             status_code: null,
             latency_ms: null,
-            error: err.message
+            error: err.name === "TimeoutError" ? "Request timed out" : err.message
         };
         
     }
