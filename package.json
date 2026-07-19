@@ -16,7 +16,7 @@
 
     "reset-db": "node --env-file=.env.test scripts/reset-db.js",
 
-    "test": "npm run reset-db && --env-file=.env.test node test"
+    "test": "npm run reset-db && NODE_ENV=test node --test"
   },
   "keywords": [],
   "author": "",
