@@ -1,8 +1,8 @@
 import { pool } from '../db/db.js'
 
-export async function findLatestCheck(monitorId) {
+export async function findLatestCheck(client, monitorId) {
 
-    const { rows } = await pool.query(
+    const { rows } = await client.query(
         `
         SELECT *
         FROM checks
@@ -16,9 +16,9 @@ export async function findLatestCheck(monitorId) {
     return rows[0];
 }
 
-export async function createCheck(monitorId, result){
+export async function createCheck(client, monitorId, result){
     
-    const { rows } = await pool.query(
+    const { rows } = await client.query(
         `
         INSERT INTO checks
             (monitor_id, ok, status_code, latency_ms, error)
