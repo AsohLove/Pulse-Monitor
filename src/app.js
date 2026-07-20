@@ -2,8 +2,9 @@ import express from "express"
 import createError from 'http-errors';
 
 import authRouter from './routes/auth-routes.js'
-
-import monitorROutes from './routes/monitor-routes.js'
+import monitorRoutes from './routes/monitor-routes.js'
+import reportRoutes from './routes/report-routes.js'
+import { getPublicStatus } from "./controllers/report-controller.js";
 
 
 export function createApp (){
@@ -28,7 +29,13 @@ export function createApp (){
 
     app.use('/auth', authRouter);
 
-    app.use('/monitors', monitorROutes)
+
+
+    app.use('/monitors', monitorRoutes)
+
+    app.get("/status", getPublicStatus);
+
+    app.use("/", reportRoutes)
 
     app.use((req, res, next) => {
         next(createError(404, "Resource not found"))

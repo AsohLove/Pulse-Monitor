@@ -44,7 +44,7 @@ export async function getSingleMonitor(req, res, next){
 
 export async function getAllMonitors(req, res, next){
     try {
-        const allMonitors = await monitors.listAllMonitors(req.user.sub);
+        const allMonitors = await monitors.listOwnerMonitors(req.user.sub);
 
         res.json({
             success: true,

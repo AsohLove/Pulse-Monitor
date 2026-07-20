@@ -28,7 +28,7 @@ export async function findSingleMonitorById(ownerId, monitorId) {
     return rows[0];
 }
 
-export async function listAllMonitors(ownerId){
+export async function listOwnerMonitors(ownerId){
     const { rows } = await pool.query(
         `
         SELECT * 
@@ -119,5 +119,42 @@ export async function getMonitorUptime(monitorId, windowHours){
 
     return rows[0];
 }
+
+
+// export async function listActiveMonitors(){
+
+//     const { rows } = await pool.query(
+//         `
+//         SELECT m.*, c.ok, c.checked_at, c.status_code
+//         FROM monitors m
+//         LEFT JOIN LATERAL (
+//             SELECT ok, checked_at, status_code
+//             FROM checks 
+//             WHERE monitor_id = m.id
+//             ORDER BY checked_at DESC
+//             LIMIT 1
+//         ) c ON true
+//         WHERE m.is_active = true;
+
+//         `
+//     );
+
+//     return rows;
+// }
+
+export async function listAllActiveMonitors() {
+
+    const { rows } = await pool.query(
+        `
+        SELECT *
+        FROM monitors
+        WHERE is_active = true
+        ORDER BY id;
+        `
+    );
+
+    return rows;
+}
+
 
 

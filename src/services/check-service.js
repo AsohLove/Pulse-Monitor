@@ -1,8 +1,8 @@
 import { pool } from "../db/db.js";
 
 import {
-    findLatestCheck,
-    createCheck
+    findLatestCheckTx,
+    createCheckTx
 } from "../models/check-model.js";
 
 import {
@@ -24,12 +24,12 @@ export async function recordCheck(
         await client.query("BEGIN");
 
         const previous =
-            await findLatestCheck(
+            await findLatestCheckTx(
                 client,
                 monitorId
             );
 
-        await createCheck(
+        await createCheckTx(
             client,
             monitorId,
             result

@@ -1,5 +1,5 @@
 import { createCheck, findLatestCheck } from "../models/check-model.js";
-import { listAllMonitors } from "../models/monitor-model.js";
+import { listAllActiveMonitors } from "../models/monitor-model.js";
 import { recordCheck } from "../services/check-service.js";
 import { pollMonitor } from "./poller.js";
 
@@ -36,7 +36,13 @@ export function stopScheduler() {
 }
 
 async function schedulerTick() {
-  const monitors = await listAllMonitors();
+
+  console.log("Scheduler tick...");
+
+  const monitors = await listAllActiveMonitors();
+
+  console.log(monitors);
+  
 
   // console.log(`Checking ${monitors.length} monitor(s)...`);
 
@@ -57,9 +63,15 @@ async function schedulerTick() {
     // console.log(`${monitor.name} is due`);
     const result = await pollMonitor(monitor);
 
+    console.log(result);
+    
+
     // await createCheck(monitor.id, result);
     
     await recordCheck(monitor.id, result);
+
+    console.log("Inserted check");
+    
 
     console.log(`${monitor.name}: ${result.ok ? "UP" : "DOWN"}`);
   }
