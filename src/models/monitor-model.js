@@ -101,4 +101,23 @@ export async function updateMonitor(ownerId, monitorId, body){
     return rows[0];
 }
 
+export async function getMonitorUptime(monitorId, windowHours){
+    
+    const { rows } = await pool.query(
+        `
+        SELECT COUNT(*) FILTER (where ok = true) AS successful,
+               COUNT(*) AS total,
+               AVG(latency_ms) AS average_latency,
+               percentile_cont(0.95) WITHIN GROUP
+                    (ORDER BY latency_ms) AS p95_latency
+        FROM checks
+        WHERE monitor_id = $1
+        AND checked_at >= NOW() - ($2 * INTERVAL '1 hour');
+
+        `, [monitorId, windowHours]
+    );
+
+    return rows[0];
+}
+
 

@@ -42,3 +42,32 @@ export async function resolveIncident(client, incidentId){
         `, [incidentId]
     )
 }
+
+export async function listIncidents(){
+
+    const { rows } = await pool.query(
+        `
+        SELECT *
+        FROM incidents
+        order by started_at DESC;
+
+        `
+    );
+    
+    return rows;
+}
+
+export async function listMonitorIncidents(monitorId){
+
+    const { rows } = await pool.query(
+        `
+        SELECT *
+        from incidents
+        WHERE monitor_id = $1
+        ORDER BY started_at DESC
+
+        `, [monitorId]
+    );
+
+    return rows;
+}
