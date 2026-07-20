@@ -2,75 +2,40 @@ import { pool } from "../db/db.js";
 
 import {
     findLatestCheckTx,
-    createCheckTx
-} from "../models/check-model.js";
+    createCheckTx } from "../models/check-model.js";
 
 import {
     findOpenIncident,
     openIncident,
-    resolveIncident
-} from "../models/incident-model.js";
+    resolveIncident } from "../models/incident-model.js";
 
-export async function recordCheck(
-    monitorId,
-    result
-) {
+export async function recordCheck(monitorId, result) {
 
-    const client =
-        await pool.connect();
+    const client = await pool.connect();
 
     try {
 
         await client.query("BEGIN");
 
-        const previous =
-            await findLatestCheckTx(
-                client,
-                monitorId
-            );
+        const previous = await findLatestCheckTx( client, monitorId);
 
-        await createCheckTx(
-            client,
-            monitorId,
-            result
-        );
+        await createCheckTx(client, monitorId, result );
 
-        const wasUp =
-            previous?.ok ?? true;
+        const wasUp = previous?.ok ?? true;
 
-        const isUp =
-            result.ok;
+        const isUp = result.ok;
 
-        const open =
-            await findOpenIncident(
-                client,
-                monitorId
-            );
+        const open = await findOpenIncident(client, monitorId);
 
-        if (
-            wasUp &&
-            !isUp &&
-            !open
-        ) {
+        if (wasUp && !isUp && !open ) {
 
-            await openIncident(
-                client,
-                monitorId,
-                result.error
-            );
+            await openIncident( client, monitorId, result.error );
 
         }
 
-        if (
-            !wasUp &&
-            isUp &&
-            open
-        ) {
+        if ( !wasUp && isUp && open) {
 
-            await resolveIncident(
-                client,
-                open.id
-            );
+            await resolveIncident(client, open.id);
 
         }
 

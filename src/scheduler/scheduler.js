@@ -3,7 +3,10 @@ import { listAllActiveMonitors } from "../models/monitor-model.js";
 import { recordCheck } from "../services/check-service.js";
 import { pollMonitor } from "./poller.js";
 
-const SCHEDULER_INTERVAL = 5000;
+const SCHEDULER_INTERVAL =
+    process.env.NODE_ENV === "test"
+        ? 1000
+        : 5000;
 
 let timer = null;
 
@@ -44,7 +47,6 @@ async function schedulerTick() {
   console.log(monitors);
   
 
-  // console.log(`Checking ${monitors.length} monitor(s)...`);
 
   for (const monitor of monitors) {
 
@@ -60,14 +62,11 @@ async function schedulerTick() {
       continue;
     }
 
-    // console.log(`${monitor.name} is due`);
+    
     const result = await pollMonitor(monitor);
 
     console.log(result);
-    
-
-    // await createCheck(monitor.id, result);
-    
+        
     await recordCheck(monitor.id, result);
 
     console.log("Inserted check");

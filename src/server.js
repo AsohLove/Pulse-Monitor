@@ -3,6 +3,8 @@ import { createServer } from 'node:http'
 import{ config } from './config.js'
 import { startScheduler, stopScheduler } from "./scheduler/scheduler.js";
 
+import { pool } from "../src/db/db.js"
+
 const app = createApp()
 
 const server = createServer(app)
@@ -19,7 +21,10 @@ process.on("SIGINT", () => {
 
     stopScheduler();
 
-    server.close(() => process.exit(0));
+    server.close(async ()  => {
+        await pool.end();
+        process.exit(0)
+    });
 
 });
 
@@ -27,6 +32,9 @@ process.on("SIGTERM", () => {
 
     stopScheduler();
 
-    server.close(() => process.exit(0));
+    server.close(async ()  => {
+        await pool.end();
+        process.exit(0)
+    });
     
 });

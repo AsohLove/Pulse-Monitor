@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import { pool } from "../src/db/db.js";
 import { createApp } from "../src/app.js";
+import { startScheduler, stopScheduler } from "../src/scheduler/scheduler.js";
 
 let server;
 let baseUrl;
@@ -20,11 +21,15 @@ test.before(async () => {
 
     server = createApp().listen(0);
 
+    startScheduler();
+
     baseUrl = `http://localhost:${server.address().port}`;
 
 });
 
 test.after(async () => {
+
+    stopScheduler();
 
     server.close();
 
@@ -214,31 +219,6 @@ test("Monitor CRUD", async (t) => {
         assert.equal(body.data.is_active, false);
 
     });
-
-    // await t.test("Delete monitor", async () => {
-
-    //     const res = await fetch(`${baseUrl}/monitors/${monitorId}`, {
-    //         method: "DELETE",
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     });
-
-    //     assert.equal(res.status, 204);
-
-    // });
-
-    // await t.test("Deleted monitor returns 404", async () => {
-
-    //     const res = await fetch(`${baseUrl}/monitors/${monitorId}`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     });
-
-    //     assert.equal(res.status, 404);
-
-    // });
 
 });
 
@@ -435,8 +415,13 @@ test("Security", async (t) => {
             })
         });
 
-        assert.notEqual(res.status, 500);
-        assert.notEqual(res.status, 200);
+        // assert.notEqual(res.status, 500);
+        // assert.notEqual(res.status, 200);
+
+        assert.ok(
+            res.status === 400 ||
+            res.status === 401
+        )
 
     });
 
@@ -484,5 +469,86 @@ test("Cleanup", async (t) => {
         assert.equal(res.status, 204);
 
     });
+
+});
+
+test("Scheduler & Incident", async (t) => {
+
+    let brokenMonitorId;
+
+    await t.test("Create failing monitor", async () => {
+
+        const res = await fetch(`${baseUrl}/monitors`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: "Broken",
+                url: "http://localhost:9999",
+                interval_seconds: 10,
+                expected_status: 200
+            })
+        });
+
+        const body = await json(res);
+
+        brokenMonitorId = body.data.id;
+
+        assert.equal(res.status, 201);
+
+    });
+
+    await t.test("Scheduler records failed check", async () => {
+
+        await new Promise(resolve => setTimeout(resolve, 17000));
+
+        const res = await fetch(
+            `${baseUrl}/monitors/${brokenMonitorId}/checks`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const body = await json(res);
+
+        assert.equal(res.status, 200);
+
+
+    });
+
+    await t.test("Incident opened", async () => {
+
+        const res = await fetch(
+            `${baseUrl}/monitors/${brokenMonitorId}/incidents`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const body = await json(res);
+
+        assert.equal(res.status, 200);
+
+        assert.ok(body.data.length >= 1);
+
+    });
+
+});
+
+test("Public Status", async (t) => {
+
+    const res = await fetch(`${baseUrl}/status`);
+
+    assert.equal(res.status, 200);
+
+    const body = await json(res);
+
+    assert.ok(Array.isArray(body.monitors));
 
 });
