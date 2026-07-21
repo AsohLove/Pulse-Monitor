@@ -1,12 +1,11 @@
-import { pool } from "../src/db/db.js";
+import { pool } from '../src/db/db.js';
 
 try {
-    await pool.query(`
+  await pool.query(`
         TRUNCATE users, monitors, checks, incidents RESTART IDENTITY CASCADE;
         `);
 
-    console.log("Database Reset Successfully!!!");
-    
+  console.log('Database Reset Successfully!!!');
 } finally {
-    await pool.end();
+  await pool.end();
 }

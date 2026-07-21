@@ -24,7 +24,6 @@ tags:
   - name: Status
 
 components:
-
   securitySchemes:
     bearerAuth:
       type: http
@@ -32,7 +31,6 @@ components:
       bearerFormat: JWT
 
   schemas:
-
     Error:
       type: object
       properties:
@@ -92,7 +90,6 @@ components:
       type: object
 
       properties:
-
         id:
           type: integer
           example: 1
@@ -148,7 +145,6 @@ components:
         - url
 
       properties:
-
         name:
           type: string
           example: Google
@@ -169,7 +165,6 @@ components:
       type: object
 
       properties:
-
         name:
           type: string
           example: Google API
@@ -194,7 +189,6 @@ components:
       type: object
 
       properties:
-
         id:
           type: integer
           example: 1
@@ -227,7 +221,6 @@ components:
       type: object
 
       properties:
-
         id:
           type: integer
           example: 1
@@ -253,7 +246,6 @@ components:
       type: object
 
       properties:
-
         uptime_percent:
           type: number
           example: 99.82
@@ -266,7 +258,6 @@ components:
           type: number
           example: 145
 paths:
-
   /health:
     get:
       tags:
@@ -274,7 +265,7 @@ paths:
       summary: Health check
       description: Returns the health status of the API.
       responses:
-        "200":
+        '200':
           description: API is healthy
           content:
             application/json:
@@ -295,25 +286,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RegisterRequest"
+              $ref: '#/components/schemas/RegisterRequest'
 
       responses:
-        "201":
+        '201':
           description: User successfully registered
 
-        "400":
+        '400':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 
-        "409":
+        '409':
           description: User already exists
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 
   /auth/login:
     post:
@@ -326,30 +317,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginRequest"
+              $ref: '#/components/schemas/LoginRequest'
 
       responses:
-        "200":
+        '200':
           description: Login successful
 
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LoginResponse"
+                $ref: '#/components/schemas/LoginResponse'
 
-        "400":
+        '400':
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 
-        "401":
+        '401':
           description: Invalid email or password
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
   /monitors:
     get:
       tags:
@@ -359,7 +350,7 @@ paths:
         - bearerAuth: []
 
       responses:
-        "200":
+        '200':
           description: List of monitors
           content:
             application/json:
@@ -373,14 +364,14 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Monitor"
+                      $ref: '#/components/schemas/Monitor'
 
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 
     post:
       tags:
@@ -394,29 +385,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateMonitor"
+              $ref: '#/components/schemas/CreateMonitor'
 
       responses:
-        "201":
+        '201':
           description: Monitor created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Monitor"
+                $ref: '#/components/schemas/Monitor'
 
-        "400":
+        '400':
           description: Validation failed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 
   /monitors/{id}:
     get:
@@ -434,7 +425,7 @@ paths:
             type: integer
 
       responses:
-        "200":
+        '200':
           description: Monitor found
           content:
             application/json:
@@ -446,17 +437,17 @@ paths:
                     example: true
 
                   data:
-                    $ref: "#/components/schemas/Monitor"
+                    $ref: '#/components/schemas/Monitor'
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "404":
+        '404':
           description: Monitor not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
 
     patch:
       tags:
@@ -477,26 +468,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateMonitor"
+              $ref: '#/components/schemas/UpdateMonitor'
 
       responses:
-        "200":
+        '200':
           description: Monitor updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Monitor"
+                $ref: '#/components/schemas/Monitor'
 
-        "400":
+        '400':
           description: Validation failed
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "404":
+        '404':
           description: Monitor not found
-        
-        "500":
+
+        '500':
           description: Internal server error
 
     delete:
@@ -514,13 +505,13 @@ paths:
             type: integer
 
       responses:
-        "204":
+        '204':
           description: Monitor deleted
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "404":
+        '404':
           description: Monitor not found
   /monitors/{id}/checks:
     get:
@@ -553,7 +544,7 @@ paths:
             default: 20
 
       responses:
-        "200":
+        '200':
           description: Checks retrieved successfully
           content:
             application/json:
@@ -567,20 +558,20 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Check"
+                      $ref: '#/components/schemas/Check'
 
                   nextCursor:
                     type: integer
                     nullable: true
                     example: 35
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "404":
+        '404':
           description: Monitor not found
 
-        "500":
+        '500':
           description: Internal server error
 
   /monitors/{id}/checks.csv:
@@ -599,20 +590,20 @@ paths:
             type: integer
 
       responses:
-        "200":
+        '200':
           description: CSV downloaded successfully
           content:
             text/csv:
               schema:
                 type: string
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "404":
+        '404':
           description: Monitor not found
 
-        "500":
+        '500':
           description: Internal server error
 
   /monitors/{id}/uptime:
@@ -640,7 +631,7 @@ paths:
           description: Time window in hours
 
       responses:
-        "200":
+        '200':
           description: Uptime statistics
           content:
             application/json:
@@ -652,12 +643,12 @@ paths:
                     example: true
 
                   data:
-                    $ref: "#/components/schemas/Uptime"
+                    $ref: '#/components/schemas/Uptime'
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "404":
+        '404':
           description: Monitor not found
   /incidents:
     get:
@@ -669,7 +660,7 @@ paths:
         - bearerAuth: []
 
       responses:
-        "200":
+        '200':
           description: Incident list
           content:
             application/json:
@@ -683,12 +674,12 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Incident"
+                      $ref: '#/components/schemas/Incident'
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "500":
+        '500':
           description: Internal server error
 
   /monitors/{id}/incidents:
@@ -707,7 +698,7 @@ paths:
             type: integer
 
       responses:
-        "200":
+        '200':
           description: Incident history
           content:
             application/json:
@@ -721,15 +712,15 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Incident"
+                      $ref: '#/components/schemas/Incident'
 
-        "401":
+        '401':
           description: Unauthorized
 
-        "404":
+        '404':
           description: Monitor not found
 
-        "500":
+        '500':
           description: Internal server error
 
   /status:
@@ -743,14 +734,13 @@ paths:
         authentication.
 
       responses:
-        "200":
+        '200':
           description: Public system status
           content:
             application/json:
               schema:
                 type: object
                 properties:
-
                   generated_at:
                     type: string
                     format: date-time
@@ -758,9 +748,9 @@ paths:
                   monitors:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Monitor"
+                      $ref: '#/components/schemas/Monitor'
 
                   open_incidents:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Incident"
+                      $ref: '#/components/schemas/Incident'

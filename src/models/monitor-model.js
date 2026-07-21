@@ -1,92 +1,100 @@
-import { pool } from '../db/db.js'
+import { pool } from '../db/db.js';
 
-export async function createMonitor(ownerId, name, url, intervalSeconds, expectedStatus) {
-    const {rows } = await pool.query(
-        `
+export async function createMonitor(
+  ownerId,
+  name,
+  url,
+  intervalSeconds,
+  expectedStatus,
+) {
+  const { rows } = await pool.query(
+    `
         INSERT into monitors 
             ( owner_id, name, url, interval_seconds, expected_status )
         VALUES
             ( $1, $2, $3, $4, $5)
         RETURNING *;
 
-        `, [ownerId, name, url, intervalSeconds, expectedStatus]
-    )
+        `,
+    [ownerId, name, url, intervalSeconds, expectedStatus],
+  );
 
-    return rows[0];
+  return rows[0];
 }
 
 export async function findSingleMonitorById(ownerId, monitorId) {
-    const { rows } = await pool.query(
-        `
+  const { rows } = await pool.query(
+    `
         SELECT * 
         FROM monitors
         WHERE id = $1
             AND owner_id = $2
-        `, [monitorId, ownerId]
-    )
+        `,
+    [monitorId, ownerId],
+  );
 
-    return rows[0];
+  return rows[0];
 }
 
-export async function listOwnerMonitors(ownerId){
-    const { rows } = await pool.query(
-        `
+export async function listOwnerMonitors(ownerId) {
+  const { rows } = await pool.query(
+    `
         SELECT * 
         FROM monitors 
         WHERE owner_id = $1
         ORDER BY id;
 
-        `, [ownerId]
-    )
+        `,
+    [ownerId],
+  );
 
-    return rows;
-
+  return rows;
 }
 
-export async function deleteMonitor(ownerId, monitorId){
-    const result = await pool.query(
-        `
+export async function deleteMonitor(ownerId, monitorId) {
+  const result = await pool.query(
+    `
         DELETE FROM monitors
         WHERE id = $1
             AND owner_id = $2;
-        `, [monitorId, ownerId]
-    )
+        `,
+    [monitorId, ownerId],
+  );
 
-    return result.rowCount;
+  return result.rowCount;
 }
 
-export async function updateMonitor(ownerId, monitorId, body){
-      const allowed = [
-        "name",
-        "url",
-        "interval_seconds",
-        "expected_status",
-        "is_active"
-    ];
-    
-    const updates = [];
+export async function updateMonitor(ownerId, monitorId, body) {
+  const allowed = [
+    'name',
+    'url',
+    'interval_seconds',
+    'expected_status',
+    'is_active',
+  ];
 
-    const values = [];
+  const updates = [];
 
-    for (const [key, value] of Object.entries(body)){
+  const values = [];
 
-        if (!allowed.includes(key)) continue;
+  for (const [key, value] of Object.entries(body)) {
+    if (!allowed.includes(key)) continue;
 
-        values.push(value);
-        updates.push(`${key} = $${values.length}`);
-    }
+    values.push(value);
+    updates.push(`${key} = $${values.length}`);
+  }
 
-    values.push(monitorId)
-    values.push(ownerId)
+  values.push(monitorId);
+  values.push(ownerId);
 
-    if (updates.length === 0) {
-        return null;
-    }
+  if (updates.length === 0) {
+    return null;
+  }
 
-    const  query = `
+  const query = `
     UPDATE monitors 
 
-    SET ${updates.join(", ")}
+    SET ${updates.join(', ')}
 
     WHERE id = $${values.length - 1}
 
@@ -96,15 +104,14 @@ export async function updateMonitor(ownerId, monitorId, body){
 
     `;
 
-    const { rows } = await pool.query(query, values)
+  const { rows } = await pool.query(query, values);
 
-    return rows[0];
+  return rows[0];
 }
 
-export async function getMonitorUptime(monitorId, windowHours){
-    
-    const { rows } = await pool.query(
-        `
+export async function getMonitorUptime(monitorId, windowHours) {
+  const { rows } = await pool.query(
+    `
         SELECT COUNT(*) FILTER (where ok = true) AS successful,
                COUNT(*) AS total,
                AVG(latency_ms) AS average_latency,
@@ -114,25 +121,22 @@ export async function getMonitorUptime(monitorId, windowHours){
         WHERE monitor_id = $1
         AND checked_at >= NOW() - ($2 * INTERVAL '1 hour');
 
-        `, [monitorId, windowHours]
-    );
+        `,
+    [monitorId, windowHours],
+  );
 
-    return rows[0];
+  return rows[0];
 }
 
 export async function listAllActiveMonitors() {
-
-    const { rows } = await pool.query(
-        `
+  const { rows } = await pool.query(
+    `
         SELECT *
         FROM monitors
         WHERE is_active = true
         ORDER BY id;
-        `
-    );
+        `,
+  );
 
-    return rows;
+  return rows;
 }
-
-
-

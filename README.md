@@ -1,7 +1,6 @@
-
 # Pulse Monitor API
 
-## :beginner: Overview 
+## :beginner: Overview
 
 Pulse-monitor is a RESTful uptime monitoring service built with **Node.js**, **Express**, and **PostgreSQL**.
 
@@ -157,6 +156,7 @@ JWT_SECRET=your_secret_key
 
 NODE_ENV=test
 ```
+
 ---
 
 ### 5. Run migrations.
@@ -196,6 +196,7 @@ Run the complete test suite.
 ```bash
 npm test
 ```
+
 ![Successful test run snapshot](./Pulse-Test.png)
 
 ---
@@ -230,6 +231,7 @@ Swagger UI documentation is available at
 ```
 /docs
 ```
+
 ![OpenAPI documentation](./OpenAPI.png)
 
 ---
@@ -253,6 +255,7 @@ Returns
 ## Main Endpoints
 
 ---
+
 ## Authentication
 
 Protected endpoints require a JWT.
@@ -353,6 +356,6 @@ LOG_LEVEL=
 
 :earth_africa: Based in Cameroon | Open for hybrid opportunities
 
-
 ## :lock: License
+
 This project is [MIT](./LICENSE) licensed.

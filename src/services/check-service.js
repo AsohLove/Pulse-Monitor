@@ -1,56 +1,43 @@
-import { pool } from "../db/db.js";
+import { pool } from '../db/db.js';
+
+import { findLatestCheckTx, createCheckTx } from '../models/check-model.js';
 
 import {
-    findLatestCheckTx,
-    createCheckTx } from "../models/check-model.js";
-
-import {
-    findOpenIncident,
-    openIncident,
-    resolveIncident } from "../models/incident-model.js";
+  findOpenIncident,
+  openIncident,
+  resolveIncident,
+} from '../models/incident-model.js';
 
 export async function recordCheck(monitorId, result) {
+  const client = await pool.connect();
 
-    const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
 
-    try {
+    const previous = await findLatestCheckTx(client, monitorId);
 
-        await client.query("BEGIN");
+    await createCheckTx(client, monitorId, result);
 
-        const previous = await findLatestCheckTx( client, monitorId);
+    const wasUp = previous?.ok ?? true;
 
-        await createCheckTx(client, monitorId, result );
+    const isUp = result.ok;
 
-        const wasUp = previous?.ok ?? true;
+    const open = await findOpenIncident(client, monitorId);
 
-        const isUp = result.ok;
-
-        const open = await findOpenIncident(client, monitorId);
-
-        if (wasUp && !isUp && !open ) {
-
-            await openIncident( client, monitorId, result.error );
-
-        }
-
-        if ( !wasUp && isUp && open) {
-
-            await resolveIncident(client, open.id);
-
-        }
-
-        await client.query("COMMIT");
-
-    } catch (err) {
-
-        await client.query("ROLLBACK");
-
-        throw err;
-
-    } finally {
-
-        client.release();
-
+    if (wasUp && !isUp && !open) {
+      await openIncident(client, monitorId, result.error);
     }
 
+    if (!wasUp && isUp && open) {
+      await resolveIncident(client, open.id);
+    }
+
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+
+    throw err;
+  } finally {
+    client.release();
+  }
 }
