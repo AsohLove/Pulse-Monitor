@@ -11,9 +11,6 @@ export async function getSingleMonitorChecks(req, res, next){
 
  
     try {
-
-        console.log("User:", req.user);
-        console.log("Monitor:", req.params.id);
         
         const monitor = await monitors.findSingleMonitorById(req.user.sub, Number(req.params.id));
 
@@ -21,10 +18,9 @@ export async function getSingleMonitorChecks(req, res, next){
             throw createError(404, "Monitor not found");
         }
 
-        const after = Number(req.query.after ?? 0);
-        const limit = Number(req.query.limit ?? 0);
+       const { after, limit } = req.validatedQuery;
 
-        const rows = await checks.getMonitorChecks(monitor.id, after, limit);
+       const rows = await checks.getMonitorChecks(monitor.id, after, limit);
 
         res.json({
             success: true,
@@ -89,7 +85,7 @@ export async function getMonitorUptime(req, res, next){
             throw createError(404, "Monitor not found!!")
         }
 
-        const window = Number(req.query.window ?? 24);
+        const { window } = req.validatedQuery;
 
         const stats = await monitors.getMonitorUptime(monitor.id, window);
 
@@ -123,7 +119,7 @@ export async function listAllIncidents(req, res, next){
 
         res.json({
             success: true,
-            date: rows
+            data: rows
         });
 
 

@@ -65,7 +65,7 @@ export async function createCheck(monitorId, result){
     return rows[0];
 }
 
-export async function getMonitorChecks(monitorId, after = 0, limit = 10){
+export async function getMonitorChecks(monitorId, after, limit){
 
     const { rows } = await pool.query(
         `

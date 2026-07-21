@@ -34,3 +34,12 @@ export const monitorIdSchema = z.object({
     id: z.coerce.number().int().positive()
 });
 
+
+export const querySchema = z.object({
+    after: z.coerce.number().int().nonnegative().default(0),
+    limit: z.coerce.number().int().nonnegative().max(100).default(10)
+});
+
+export const uptimeQuerySchema = z.object({
+    window: z.coerce.number().int().positive().default(24)
+});
