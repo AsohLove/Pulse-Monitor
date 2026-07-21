@@ -12,6 +12,8 @@ info:
 servers:
   - url: http://localhost:3000
     description: Local Development
+  - url: https://pulse-monitor-yd3n.onrender.com/
+    description: Production
 
 tags:
   - name: Health
