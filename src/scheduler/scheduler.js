@@ -20,11 +20,11 @@ export function startScheduler() {
     try {
       await schedulerTick();
     } catch (err) {
-      console.error("Scheduler tick failed: ", err);
+      logger.error("Scheduler tick failed: ", err);
     }
   }, SCHEDULER_INTERVAL);
 
-  console.log("Scheduler started!!");
+  logger.info("Scheduler started!!");
 }
 
 export function stopScheduler() {
@@ -36,7 +36,7 @@ export function stopScheduler() {
 
   timer = null;
 
-  console.log("Scheduler stopped!!");
+  logger.info("Scheduler stopped!!");
 }
 
 async function schedulerTick() {

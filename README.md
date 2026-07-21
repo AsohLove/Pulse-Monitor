@@ -69,7 +69,7 @@ Pulse-Monitor-API
 │   ├── middleware
 │   ├── models
 │   ├── routes
-    |── schedular
+    |── scheduler
     |── validations
 │   ├── services
 │   ├── app.js
@@ -88,8 +88,9 @@ Pulse-Monitor-API
 
 ## Database Schema
 
-The project contains three main tables.
+The project contains four main tables.
 
+- users
 - monitors
 - checks
 - incidents

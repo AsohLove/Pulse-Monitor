@@ -14,30 +14,32 @@ import { monitorIdSchema, querySchema, uptimeQuerySchema } from "../validations/
 const router = Router();
 
 
-// router.get("/status", getPublicStatus);
-
-
-router.use(requireAuth);
-
-router.get("/incidents", listAllIncidents);
+router.get("/incidents", requireAuth, listAllIncidents);
 
 router.get("/monitors/:id/checks", 
+    requireAuth,
     validate(monitorIdSchema, "params"),
     validate(querySchema, "query"),
     getSingleMonitorChecks
 );
 
-router.get("/monitors/:id/checks.csv", 
+router.get("/monitors/:id/checks.csv",
+    requireAuth,
     validate(monitorIdSchema, "params"),
     downloadChecksCsv
 );
 
-router.get("/monitors/:id/uptime", 
+router.get("/monitors/:id/uptime",
+    requireAuth,
     validate(monitorIdSchema, "params"),
     validate(uptimeQuerySchema, "query"),
     getMonitorUptime);
 
-router.get("/monitors/:id/incidents", validate(monitorIdSchema, "params"), listMonitorIncidents);
+router.get("/monitors/:id/incidents",
+    requireAuth,
+     validate(monitorIdSchema, "params"), 
+     listMonitorIncidents
+);
 
 
 

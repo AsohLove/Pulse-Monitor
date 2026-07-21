@@ -65,7 +65,7 @@ export async function updateMonitor(req, res, next){
         );
 
         if (!updated) {
-            throw createError(404, "Monitor not found!!");
+            throw createError(404, "Monitor not found.");
         }
 
         res.json({
@@ -84,7 +84,7 @@ export async function deleteSingleMonitor(req, res, next){
         const deletedMonitor = await monitors.deleteMonitor(req.user.sub, req.params.id)
 
         if (deletedMonitor === 0) {
-            throw createError(404, "MOnitor not found!!")
+            throw createError(404, "Monitor not found.")
         }
 
         res.sendStatus(204);

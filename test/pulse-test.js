@@ -502,7 +502,7 @@ test("Scheduler & Incident", async (t) => {
 
     await t.test("Scheduler records failed check", async () => {
 
-        await new Promise(resolve => setTimeout(resolve, 17000));
+        await new Promise(resolve => setTimeout(resolve, 12000));
 
         const res = await fetch(
             `${baseUrl}/monitors/${brokenMonitorId}/checks`,
@@ -513,9 +513,18 @@ test("Scheduler & Incident", async (t) => {
             }
         );
 
+        assert.equal(res.status, 200);
+
         const body = await json(res);
 
-        assert.equal(res.status, 200);
+        assert.ok(body.data.length > 0);
+
+        assert.equal(body.data[0].ok, false);
+
+        assert.equal(body.data[0].status_code, null);
+
+        assert.ok(body.data[0].error);
+
 
 
     });

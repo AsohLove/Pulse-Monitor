@@ -8,7 +8,13 @@ export function requireAuth(req, res, next) {
         return next(createError(401, 'Authentication is required'));
     }
 
-    const token = header.replace("Bearer ", "");
+    const [scheme, token] = header.split(" ");
+
+    if (scheme !== "Bearer" || !token) {
+        return next(
+            createError(401, "Invalid authorization header")
+        );
+    }
 
     try {
         req.user = verifyToken(token);

@@ -39,6 +39,24 @@ export async function getSingleMonitorChecks(req, res, next){
 
 }
 
+function csvField(value) {
+
+    if (value == null) {
+        return "";
+    }
+
+    const text = String(value);
+
+    if (/[,"\n]/.test(text)) {
+
+        return `"${text.replace(/"/g, '""')}"`;
+
+    }
+
+    return text;
+
+}
+
 export async function downloadChecksCsv(req, res, next){
 
     try {
@@ -57,12 +75,13 @@ export async function downloadChecksCsv(req, res, next){
             header, 
             ...rows.map(row => 
                 [
-                    row.checked_at,
+                    row.checked_at?.toISOString(),
                     row.ok,
                     row.status_code ?? "",
                     row.latency_ms ?? "",
                     row.error ?? ""
-                ].join(",")
+                ].map(csvField)
+                .join(",")
             )
         ].join("\n");
 

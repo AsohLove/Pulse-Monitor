@@ -24,6 +24,7 @@ export async function openIncident(client, monitorId, cause){
             (monitor_id, cause) 
         VALUES 
             ($1, $2)
+        RETURNING *;
         
         `, [monitorId, cause]
     );
@@ -41,6 +42,8 @@ export async function resolveIncident(client, incidentId){
         
         `, [incidentId]
     )
+
+    return rows;
 }
 
 export async function listIncidents(){

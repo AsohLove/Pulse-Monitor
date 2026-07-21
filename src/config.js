@@ -27,7 +27,7 @@ const schema = z.object({
     ])
     .default("info"),
   POLL_TIMEOUT_MS: z
-    .number().int().positive().default(5000),
+    .coerce.number().int().positive().default(5000),
 
 });
 
