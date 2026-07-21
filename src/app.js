@@ -66,7 +66,8 @@ export function createApp() {
     next(createError(404, 'Resource not found'));
   });
 
-  app.use((err, req, res) => {
+  // eslint-disable-next-line no-unused-vars
+  app.use((err, req, res, next) => {
     req.log.error(err);
 
     res.status(err.status || 500).json({
