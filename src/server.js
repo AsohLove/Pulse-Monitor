@@ -4,6 +4,7 @@ import{ config } from './config.js'
 import { startScheduler, stopScheduler } from "./scheduler/scheduler.js";
 
 import { pool } from "../src/db/db.js"
+import { logger } from "../lib/logger.js";
 
 const app = createApp()
 
@@ -11,7 +12,7 @@ const server = createServer(app)
 
 
 server.listen(config.port, () => {
-    console.log(`Pulse monitor running on http://localhost:${config.port}`);
+    logger.info(`Pulse monitor running on http://localhost:${config.port}`);
     
     startScheduler();
 })

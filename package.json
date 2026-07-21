@@ -6,16 +6,11 @@
   "scripts": {
     "dev": "node --env-file=.env --watch src/server.js",
     "start": "node --env-file=.env  src/server.js",
-
-    
     "migrate": "node --env-file=.env scripts/migrate.js",
     "migrate:test": "node --env-file=.env.test  scripts/migrate.js",
-
     "seed": "node --env-file=.env scripts/seed.js",
     "seed:test": "node --env-file=.env.test scripts/seed.js",
-
     "reset-db": "node --env-file=.env.test scripts/reset-db.js",
-
     "test": "npm run reset-db && NODE_ENV=test node --test"
   },
   "keywords": [],
@@ -35,6 +30,7 @@
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
     "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.9.0",
     "yamljs": "^0.3.0",
     "zod": "^4.4.3"
   }
