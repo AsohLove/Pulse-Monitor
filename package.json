@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "node --env-file=.env --watch src/server.js",
-    "start": "node --env-file=.env  src/server.js",
-    "migrate": "node --env-file=.env scripts/migrate.js",
+    "start": "node src/server.js",
+    "migrate": "node scripts/migrate.js",
     "migrate:test": "node --env-file=.env.test  scripts/migrate.js",
     "seed": "node --env-file=.env scripts/seed.js",
     "seed:test": "node --env-file=.env.test scripts/seed.js",

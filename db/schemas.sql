@@ -1,11 +1,11 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE monitors (
+CREATE TABLE IF NOT EXISTS monitors (
 
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
@@ -30,7 +30,7 @@ CREATE TABLE monitors (
     owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE checks (
+CREATE TABLE IF NOT EXISTS checks (
 
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
@@ -50,7 +50,7 @@ CREATE TABLE checks (
     error TEXT
 );
 
-CREATE TABLE incidents (
+CREATE TABLE IF NOT EXISTS incidents (
 
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
@@ -66,8 +66,8 @@ CREATE TABLE incidents (
     cause TEXT
 );
 
-CREATE INDEX idx_checks_monitor_checked_at
+CREATE INDEX IF NOT EXISTS idx_checks_monitor_checked_at
 ON checks (monitor_id, checked_at DESC);
 
-CREATE INDEX idx_monitors_owner
+CREATE INDEX IF NOT EXISTS idx_monitors_owner
 ON monitors(owner_id);
