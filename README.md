@@ -189,6 +189,199 @@ npm start
 
 ---
 
+
+---
+
+# 🐳 Running with Docker
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- Docker
+- Docker Compose
+
+Verify your installation:
+
+```bash
+docker --version
+docker compose version
+```
+
+---
+
+## Build and Start
+
+From the project root, run:
+
+```bash
+docker compose up --build
+```
+
+On the first run Docker will:
+
+- Build the Pulse Monitor API image.
+- Start the PostgreSQL database.
+- Wait for the database to become available.
+- Run the database migrations automatically.
+- Start the API server.
+
+The API will be available at:
+
+```
+http://localhost:3000
+```
+
+Swagger UI:
+
+```
+http://localhost:3000/docs
+```
+
+---
+
+## Docker Services
+
+The Docker Compose setup contains two services.
+
+| Service | Description |
+|----------|-------------|
+| **api** | Pulse Monitor REST API |
+| **postgres** | PostgreSQL database |
+
+The PostgreSQL database uses a Docker volume so your monitoring data persists between container restarts.
+
+---
+
+## Docker Environment Variables
+
+The following environment variables are provided through `docker-compose.yml`.
+
+```yaml
+NODE_ENV=development
+PORT=3000
+DATABASE_URL=postgres://postgres:postgres@postgres:5432/pulse_monitor
+JWT_SECRET=change-me
+LOG_LEVEL=info
+POLL_TIMEOUT_MS=5000
+```
+
+Modify these values inside `docker-compose.yml` if needed.
+
+---
+
+## Stopping the Application
+
+Stop the containers:
+
+```bash
+docker compose down
+```
+
+---
+
+## Removing Everything
+
+To remove the containers **and** the PostgreSQL data volume:
+
+```bash
+docker compose down -v
+```
+
+---
+
+## Viewing Logs
+
+View API logs:
+
+```bash
+docker compose logs api
+```
+
+View PostgreSQL logs:
+
+```bash
+docker compose logs postgres
+```
+
+Follow logs in real time:
+
+```bash
+docker compose logs -f
+```
+
+---
+
+## Rebuilding the Application
+
+Whenever you modify the Dockerfile or dependencies:
+
+```bash
+docker compose up --build
+```
+
+To completely rebuild everything:
+
+```bash
+docker compose down -v
+docker compose build --no-cache
+docker compose up
+```
+
+---
+
+## Docker Image Size
+
+Display the Docker image size:
+
+```bash
+docker images
+```
+
+Update this README with the size of your final API image after building.
+
+---
+
+## Troubleshooting
+
+### Port 3000 already in use
+
+Stop the process using port **3000** or change the port mapping in `docker-compose.yml`.
+
+---
+
+### Port 5432 already in use
+
+If PostgreSQL is already running on your machine, either stop it or change the mapping to:
+
+```yaml
+ports:
+  - "5433:5432"
+```
+
+---
+
+### Database initialization fails
+
+Remove existing containers and volumes:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+---
+
+### Run migrations manually
+
+If necessary, execute database migrations inside the API container:
+
+```bash
+docker compose exec api npm run migrate
+```
+
+---
+
 ## Running Tests
 
 Run the complete test suite.
