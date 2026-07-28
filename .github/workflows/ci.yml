@@ -49,6 +49,17 @@ jobs:
 
       - run: npm ci
 
+      - name: Create .env.test
+        run: |
+          cat <<EOF > .env.test
+          NODE_ENV=$NODE_ENV
+          DATABASE_URL=$DATABASE_URL
+          JWT_SECRET=$JWT_SECRET
+          PORT=$PORT
+          LOG_LEVEL=$LOG_LEVEL
+          POLL_TIMEOUT_MS=$POLL_TIMEOUT_MS
+          EOF
+
       - run: npm run migrate:test
 
       - run: npm test
